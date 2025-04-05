@@ -3,6 +3,12 @@
 This project uses the signal rest api from [this repo](https://github.com/bbernhard/signal-cli-rest-api).
 Furthermore
 
+### Start the bot
+- docker compose up -d
+- pip install -r requirements.txt
+- python3 main.py
+
+
 
 ### Feature List
 
