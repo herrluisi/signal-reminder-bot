@@ -1,0 +1,23 @@
+# Python virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Environment files
+.env
+.env-*
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+*.iml
+
+# Signal Bot
+signal-cli-config/
