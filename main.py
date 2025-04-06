@@ -3,13 +3,13 @@ from dotenv import load_dotenv
 from signalbot import SignalBot
 from commands import (
     FridayCommand,
-    PingCommand
+    PingCommand, ReminderCommand
 )
 import logging
 
 
 logging.getLogger().setLevel(logging.INFO)
-logging.getLogger("apscheduler").setLevel(logging.WARNING)
+# logging.getLogger("apscheduler").setLevel(logging.CRITICAL)
 
 load_dotenv()
 
@@ -25,20 +25,10 @@ def main():
     }
     bot = SignalBot(config)
 
-    # enable a chat command for all contacts and all groups
-    # bot.register(PingCommand())
-    # bot.register(ReplyCommand())
-
-    # enable a chat command only for groups
-    bot.register(PingCommand(), contacts=True, groups=True)
-
     # enable a chat command for one specific group with the name "My Group"
     bot.register(FridayCommand(), contacts=False, groups=["Reminders"])
-
-    # chat command is enabled for all groups and one specific contact
-    # bot.register(TriggeredCommand(), contacts=["+490123456789"], groups=True)
-    #
-    # bot.register(RegexTriggeredCommand())
+    bot.register(PingCommand(), contacts=False, groups=["Reminders"])
+    bot.register(ReminderCommand(), contacts=False, groups=["Reminders"])
 
     bot.start()
 
