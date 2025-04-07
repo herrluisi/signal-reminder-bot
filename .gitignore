@@ -21,3 +21,6 @@ __pycache__/
 
 # Signal Bot
 signal-cli-config/
+
+# test files
+fill_db.py

@@ -13,6 +13,6 @@ Furthermore
 ### Feature List
 
 
-### ToDo's
+### Wanted Features
 
-- basic setup of the cli ui 
+- Resend reminders after a specific amount of minutes - triggered by reaction on the reminder message

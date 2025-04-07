@@ -1,9 +1,10 @@
 import json
 from os import getenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from .database import Base, session, engine
 
 load_dotenv()
 
@@ -14,14 +15,18 @@ class Reminder(Base):
     date = Column(DateTime, nullable=False)
     message = Column(String, nullable=False)  # message to send
     number = Column(String, nullable=False, default=getenv("PHONE_NUMBER"))  # recipient number
+    messageTimeStamp = Column(String)   # timestamp of the message which reminds the person for later use of "remine me again in 5 minutes as reaction"
     sent = Column(Boolean, default=False)  # whether the reminder has been sent or not
 
 Base.metadata.create_all(bind=engine)
 
 
 def load_reminders():
-    """Load reminders from the database."""
-    reminders = session.query(Reminder).filter(Reminder.date < datetime.now() - timedelta(hours=1)).order_by(Reminder.date).all()
+    """Load reminders from the database which aren't sent yet and are in the future."""
+    print(datetime.now(), "load reminders after", datetime.now() - timedelta(minutes=1))
+    reminders = session.query(Reminder).filter(
+        Reminder.date > datetime.now() - timedelta(minutes=1)).order_by(Reminder.date).all()
+    print(datetime.now(), "loaded reminders from db")
     return [
         {
             "id": reminder.id,
@@ -29,9 +34,7 @@ def load_reminders():
             "message": reminder.message,
             "number": reminder.number,
             "sent": reminder.sent,
-        }
-        for reminder in reminders
-    ]
+         } for reminder in reminders]
 
 
 def add_reminder(date: datetime, message: str, number: str = getenv("PHONE_NUMBER")):
@@ -52,7 +55,7 @@ def update_reminder(reminder_id: int, sent: bool):
     return False
 
 
-def repeated_reminder(reminder_id: int, duration: int):
+def repeat_reminder(reminder_id: int, duration: int):
     """Update the reminder date in the database.
 
     :param reminder_id: the id of the reminder
@@ -70,4 +73,3 @@ def repeated_reminder(reminder_id: int, duration: int):
         session.commit()
         return True
     return False
-
