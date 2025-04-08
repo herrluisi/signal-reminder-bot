@@ -27,13 +27,12 @@ class ReminderCommand(Command):
                     # Example: remindme 30 There's a meeting in 5 Minutes!
                     time = float(message.split(" ")[1])
                     reminder = ""
-                    reminder_part = message.split(" ")[2:]
+                    for word in message.split(" ")[2:]:
+                        if word.startswith("+49"):
+                            number = word
+                            break
+                        reminder += word + " "
                     if message.count("+49") > 0:
-                        for word in reminder_part:
-                            if word.startswith("+49"):
-                                number = word
-                                break
-                            reminder += word + " "
                         add_reminder(datetime.now() + timedelta(minutes=time), reminder, number)
                         await c.send(f"I will remind {number} in {time} minutes: {reminder}")
                         return
