@@ -4,7 +4,11 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
+
+from signalbot import Context
+
 from .database import Base, session, engine
+from ..bot import send_message
 
 load_dotenv()
 
@@ -15,7 +19,7 @@ class Reminder(Base):
     date = Column(DateTime, nullable=False)
     message = Column(String, nullable=False)  # message to send
     number = Column(String, nullable=False, default=getenv("PHONE_NUMBER"))  # recipient number
-    messageTimeStamp = Column(String)   # timestamp of the message which reminds the person for later use of "remine me again in 5 minutes as reaction"
+    messageTimeStamp = Column(String, unique=True)   # timestamp of the message which reminds the person for later use of "remine me again in 5 minutes as reaction"
     sent = Column(Boolean, default=False)  # whether the reminder has been sent or not
 
 Base.metadata.create_all(bind=engine)
@@ -73,3 +77,9 @@ def repeat_reminder(reminder_id: int, duration: int):
         session.commit()
         return True
     return False
+
+
+async def send_reminder(id: int, message: str, number: str):
+    await send_message(message, number)
+    session.query(Reminder).filter(Reminder.id == id).update({"sent": True})
+    session.commit()
