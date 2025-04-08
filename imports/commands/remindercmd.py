@@ -38,5 +38,5 @@ class ReminderCommand(Command):
                             f"I will remind {number} in {time} minutes ({datetime.now() + timedelta(minutes=time)}:\n{reminder}")
                         return
                     add_reminder(datetime.now() + timedelta(minutes=time), reminder)
-                    await c.send(f"I will remind you in {time} minutes: {reminder}")
+                    await c.send(f"I will remind you in {time} minutes ({datetime.now() + timedelta(minutes=time)}:\n{reminder}")
 
